@@ -15,5 +15,6 @@ $ kubectl expose pod galaxy --port=80 --name=galaxy
 ```
 ## Notes
 this implementation makes use of a single pod to run all containers
+
 separate volumes can be dedicated to each pod by using persistentvolumeclaims.(See directory separate pods for more details)
 
