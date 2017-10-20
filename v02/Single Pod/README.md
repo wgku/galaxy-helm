@@ -1,5 +1,6 @@
 # Galaxy Docker-Swarm Replication
 This is an attempt to replicate galaxy docker-swarm/compose implementation on kubernetes k8s cluster
+
 run using command
 ```
 $ kubectl create -f galaxy-web.yaml
