@@ -1,0 +1,206 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: galaxy
+spec:
+
+  volumes:
+  - name: shared-data
+    hostPath:
+     path: /export
+     
+  - hostPath:
+     path: /var/run/docker.sock
+    name: dockersocket
+  containers:
+
+  - name: galaxy-proftpd 
+    image: abhikghosh41/galaxy-proftpd
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/
+    ports:
+    - hostPort: 21
+      containerPort: 21  
+    ports:
+    - hostPort: 22
+      containerPort: 22
+    ports:
+    - containerPort: 21
+    - containerPort: 22
+    - containerPort: 30000
+    - containerPort: 30001
+    - containerPort: 30002
+    - containerPort: 30003
+    - containerPort: 30004
+    - containerPort: 30005
+    - containerPort: 30006
+    - containerPort: 30007
+    - containerPort: 30008
+    - containerPort: 30009
+    - containerPort: 30010
+    env:  
+    - name: proftpd_db_connection
+      value: galaxy@galaxy-postgres
+    - name: proftpd_db_username
+      value: galaxy
+    - name: proftpd_db_password
+      value: chaopagoosaequuashie
+    - name: proftpd_files_dir
+      value: /export/ftp/
+    - name: proftpd_use_sftp
+      value: "True"
+    - name: proftpd_generate_ssh_key
+      value: "False"
+    - name: proftpd_passive_port_low
+      value: "30000"
+    - name: proftpd_passive_port_high
+      value: "30010"
+
+  - name: galaxy-postgres
+    image: abhikghosh41/galaxy-postgres
+    volumeMounts:
+    - name: shared-data
+      mountPath: /var/lib/postgresql/
+    
+    ports:
+    - hostPort: 5432
+      containerPort: 5432
+    
+    resources: {}
+    
+    env:
+    - name: POSTGRES_PASSWORD
+      value: chaopagoosaequuashie
+    - name: POSTGRES_USER
+      value: galaxy
+    - name: POSTGRES_DB
+      value: galaxy
+  
+  
+  - name: galaxy-slurm
+    image: abhikghosh41/galaxy-slurm
+    
+    resources: {}
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/  
+    
+  - name: galaxy-init
+    image: abhikghosh41/galaxy-init
+    resources: {}
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/ 
+  
+  - name: galaxy-htcondor
+    image: abhikghosh41/galaxy-htcondor
+    resources: {}
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/
+  
+  - name: galaxy-htcondor-executor
+    image: abhikghosh41/galaxy-htcondor-executor
+    resources: {}
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/ 
+    - name: dockersocket
+      mountPath: /var/run/docker.sock    
+    securityContext:
+          privileged: true
+  
+  - name: galaxy-htcondor-executor-big
+    image: abhikghosh41/galaxy-htcondor-executor
+    resources: {}
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/
+    - name: dockersocket
+      mountPath: /var/run/docker.sock
+    env:
+    - name: CONDOR_HOST
+      value: galaxy-htcondor
+    - name: CONDOR_CPUS
+      value: "2"
+    - name: CONDOR_MEMORY
+      value: "2048"
+    securityContext:
+          privileged: true
+  
+  - name:  galaxy-rabbitmq
+    image: rabbitmq:alpine
+    volumeMounts:
+    - name: shared-data
+      mountPath: /var/lib/rabbitmq    
+    env: 
+    - name: RABBITMQ_DEFAULT_USER
+      value: galaxy
+    - name: RABBITMQ_DEFAULT_PASS
+      value: vaiJa3ieghai2ief0jao
+    - name: RABBITMQ_DEFAULT_VHOST
+      value: galaxy
+  
+  
+  - name: galaxy
+    image: abhikghosh41/galaxy-web
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/ 
+    - name: dockersocket
+      mountPath: /var/run/docker.sock
+    env:
+    - name: NONUSE
+      value: proftpd,postgres,slurmd,slurmctld
+    - name: GALAXY_DEFAULT_ADMIN_USER
+      value: admin@galaxy.org
+    - name: GALAXY_DEFAULT_ADMIN_PASSWORD
+      value: admin
+    - name: GALAXY_DEFAULT_ADMIN_KEY
+      value: admin
+    - name: GALAXY_HANDLER_NUMPROCS
+      value: "2"
+    - name: UWSGI_PROCESSES
+      value: "4"
+    - name: GALAXY_CONFIG_ALLOW_USER_DATASET_PURGE
+      value: "True"
+    - name: GALAXY_CONFIG_ALLOW_LIBRARY_PATH_PASTE
+      value: "True"
+    - name: GALAXY_CONFIG_ENABLE_USER_DELETION
+      value: "True"
+    - name: GALAXY_CONFIG_ENABLE_BETA_WORKFLOW_MODULES
+      value: "True"
+    - name: GALAXY_CONFIG_DATABASE_CONNECTION
+      value: postgresql://galaxy:chaopagoosaequuashie@galaxy/galaxy?client_encoding=utf8
+        # Configurate admin and master api key. Can be overridden in galaxy.ini
+    - name: GALAXY_CONFIG_ADMIN_USERS
+      value: admin@galaxy.org
+    - name: GALAXY_CONFIG_MASTER_API_KEY
+      value: HSNiugRFvgT574F43jZ7N9F3
+    - name: GALAXY_CONFIG_AMQP_INTERNAL_CONNECTION
+      value: amqp://galaxy:vaiJa3ieghai2ief0jao@galaxy/galaxy
+        # Condor
+    - name: GALAXY_DESTINATIONS_DEFAULT
+      value: slurm_cluster
+    - name: ENABLE_CONDOR
+      value: "true"
+    - name: CONDOR_HOST
+      value: galaxy
+    - name: GALAXY_CONDOR_UNIVERSE
+      value: vanilla
+    - name: GALAXY_DOCKER_ENABLED
+      value: "false"
+    - name: GALAXY_CONFIG_CLEANUP_JOB
+      value: onsuccess
+    ports:
+    - hostPort: 8080
+      containerPort: 80
+    ports:
+    - hostPort: 8081
+      containerPort: 8080
+    ports:
+    - hostPort: 9001
+      containerPort: 9001
+    securityContext:
+          privileged: true

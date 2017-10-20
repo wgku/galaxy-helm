@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: galaxy-htcondor-executor-big
+spec:
+
+  volumes:
+  - name: shared-data
+    persistentVolumeClaim:
+     claimName: shared-data
+     
+  - persistentVolumeClaim:
+     claimName: dockersocket
+    name: dockersocket
+  containers:
+  
+  - name: galaxy-htcondor-executor-big
+    image: abhikghosh41/galaxy-htcondor-executor
+    resources: {}
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/
+    - name: dockersocket
+      mountPath: /var/run/docker.sock
+    env:
+    - name: CONDOR_HOST
+      value: galaxy-htcondor
+    - name: CONDOR_CPUS
+      value: "2"
+    - name: CONDOR_MEMORY
+      value: "2048"
+    securityContext:
+          privileged: true
+    ports:
+    - containerPort: 80
+    

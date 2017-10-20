@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: galaxy-htcondor
+spec:
+
+  volumes:
+  - name: shared-data
+    persistentVolumeClaim:
+     claimName: shared-data
+     
+  - persistentVolumeClaim:
+     claimName: dockersocket
+    name: dockersocket
+  containers:
+    
+  - name: galaxy-htcondor
+    image: abhikghosh41/galaxy-htcondor
+    resources: {}
+    volumeMounts:
+    - name: shared-data
+      mountPath: /export/
+    ports:
+    - containerPort: 80
+  
