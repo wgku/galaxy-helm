@@ -11,7 +11,7 @@ $ kubectl label pod galaxy KEY1=galaxy1
 ```
 expose service using 
 ```
-$ kubectl expose pod galaxy --port=80 --name=galaxy
+$ kubectl expose pod galaxy --port=80 --name=frontend
 ```
 ## Notes
 this implementation makes use of a single pod to run all containers
