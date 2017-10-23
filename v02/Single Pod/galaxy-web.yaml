@@ -172,7 +172,7 @@ spec:
     - name: GALAXY_CONFIG_ENABLE_BETA_WORKFLOW_MODULES
       value: "True"
     - name: GALAXY_CONFIG_DATABASE_CONNECTION
-      value: postgresql://galaxy:chaopagoosaequuashie@galaxy/galaxy?client_encoding=utf8
+      value: postgresql://galaxy:chaopagoosaequuashie@galaxy-postgres/galaxy?client_encoding=utf8
         # Configurate admin and master api key. Can be overridden in galaxy.ini
     - name: GALAXY_CONFIG_ADMIN_USERS
       value: admin@galaxy.org
