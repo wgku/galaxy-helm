@@ -11,6 +11,7 @@ $ kubectl label pod galaxy KEY1=galaxy1
 ```
 expose service using 
 ```
+$ kubectl expose pod galaxy --port=5432 --name=galaxy-postgres
 $ kubectl expose pod galaxy --port=80 --name=frontend
 ```
 ## Notes
