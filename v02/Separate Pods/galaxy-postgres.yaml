@@ -13,6 +13,10 @@ spec:
      claimName: dockersocket
     name: dockersocket
   
+  securityContext:
+
+     fsGroup: 1234
+  
  
   containers:
 
@@ -22,7 +26,7 @@ spec:
     image: abhikghosh41/galaxy-postgres
     volumeMounts:
     - name: shared-data
-      mountPath: /var/lib/postgresql/
+      mountPath: /var/lib/postgresql:z
     
     ports:
     - hostPort: 5432
@@ -38,6 +42,10 @@ spec:
       value: galaxy
     - name: POSTGRES_DB
       value: galaxy
+      
+    securityContext:
+          privileged: true
+          runAsUser: 0
   
   
   

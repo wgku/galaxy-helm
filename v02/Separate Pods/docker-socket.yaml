@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: dockersocket
 spec:
+  storageClassName: manual
   accessModes:
   - ReadWriteMany
   resources:

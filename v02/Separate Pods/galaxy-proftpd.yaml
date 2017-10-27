@@ -8,6 +8,9 @@ spec:
   - name: shared-data
     persistentVolumeClaim:
      claimName: shared-data
+  
+  securityContext:
+    fsGroup: 1234
      
   containers:
 
@@ -15,7 +18,7 @@ spec:
     image: abhikghosh41/galaxy-proftpd
     volumeMounts:
     - name: shared-data
-      mountPath: /export/
+      mountPath: /export:z
     ports:
     - hostPort: 21
       containerPort: 21  
@@ -53,5 +56,8 @@ spec:
       value: "30000"
     - name: proftpd_passive_port_high
       value: "30010"
-
+    
+    securityContext:
+          privileged: true
+          runAsUser: 0
   

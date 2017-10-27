@@ -8,10 +8,16 @@ spec:
   - name: shared-data
     persistentVolumeClaim:
      claimName: shared-data
+  
+  
      
   - persistentVolumeClaim:
      claimName: dockersocket
     name: dockersocket
+    
+  securityContext:
+   fsGroup: 1234
+   
   containers:
   
   - name: galaxy-slurm
@@ -20,7 +26,11 @@ spec:
     resources: {}
     volumeMounts:
     - name: shared-data
-      mountPath: /export/  
+      mountPath: /export:z 
     ports:
     - containerPort: 80
+    
+    securityContext:
+          privileged: true
+          runAsUser: 0
   

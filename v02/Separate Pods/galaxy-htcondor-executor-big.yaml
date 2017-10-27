@@ -12,6 +12,10 @@ spec:
   - persistentVolumeClaim:
      claimName: dockersocket
     name: dockersocket
+    
+  securityContext:
+
+     fsGroup: 1234
   containers:
   
   - name: galaxy-htcondor-executor-big
@@ -33,4 +37,8 @@ spec:
           privileged: true
     ports:
     - containerPort: 80
+    
+    securityContext:
+          privileged: true
+          runAsUser: 0
     

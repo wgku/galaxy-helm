@@ -1,10 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: galaxy-web
+  name: galaxy
 spec:
 
   volumes:
+
+      
   - name: shared-data
     persistentVolumeClaim:
      claimName: shared-data
@@ -12,10 +14,29 @@ spec:
   - persistentVolumeClaim:
      claimName: dockersocket
     name: dockersocket
+  securityContext:
+     runAsUser: 0
+     fsGroup: 0 
+  
   containers:
- 
+
+  
+  - name:  galaxy-rabbitmq
+    image: rabbitmq:alpine
+    volumeMounts:
+    - name: shared-data
+      mountPath: /var/lib/rabbitmq    
+    env: 
+    - name: RABBITMQ_DEFAULT_USER
+      value: galaxy
+    - name: RABBITMQ_DEFAULT_PASS
+      value: vaiJa3ieghai2ief0jao
+    - name: RABBITMQ_DEFAULT_VHOST
+      value: galaxy
+  
+  
   - name: galaxy
-    image: abhikghosh41/galaxy-web
+    image: abhikghosh41/galaxyansals-web
     volumeMounts:
     - name: shared-data
       mountPath: /export/ 
@@ -50,7 +71,7 @@ spec:
     - name: GALAXY_CONFIG_MASTER_API_KEY
       value: HSNiugRFvgT574F43jZ7N9F3
     - name: GALAXY_CONFIG_AMQP_INTERNAL_CONNECTION
-      value: amqp://galaxy:vaiJa3ieghai2ief0jao@galaxy-rabbitmq/galaxy
+      value: amqp://galaxy:vaiJa3ieghai2ief0jao@galaxy/galaxy
         # Condor
     - name: GALAXY_DESTINATIONS_DEFAULT
       value: slurm_cluster
@@ -75,3 +96,13 @@ spec:
       containerPort: 9001
     securityContext:
           privileged: true
+    command:
+      - "workflow-install"
+      - "-w"
+      - "workflows"
+      - "-g"
+      - "http://localhost:80" 
+      - "-u" 
+      - "admin@galaxy.org" 
+      - "-p" 
+      - "admin"

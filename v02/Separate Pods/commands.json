@@ -1,0 +1,3 @@
+{
+  "commandToExecute": "chmod -R 777 /root && chmod -R 777 /home"
+}

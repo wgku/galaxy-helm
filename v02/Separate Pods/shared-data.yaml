@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: shared-data
 spec:
+  storageClassName: manual
   accessModes:
   - ReadWriteMany
   resources:
