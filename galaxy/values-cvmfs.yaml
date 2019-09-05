@@ -12,7 +12,7 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 8000
+  port: 80
 
 webHandlers:
   replicaCount: 1
@@ -180,6 +180,7 @@ configs:
       static-map: /static=/galaxy/server/static
       static-map: /favicon.ico=/galaxy/server/static/favicon.ico
       pythonpath: /galaxy/server/lib
+      path: /galaxy/server/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       thunder-lock: true
       manage-script-name: true
       mount: {{.Values.ingress.path}}=galaxy.webapps.galaxy.buildapp:uwsgi_app()
@@ -203,12 +204,20 @@ configs:
       containers_resolvers_config_file: "/galaxy/server/config/container_resolvers_conf.xml"
       workflow_schedulers_config_file: "/galaxy/server/config/workflow_schedulers_conf.xml"
       build_sites_config_file: "/galaxy/server/config/build_sites.yml"
+      dependency_resolvers_config_file: "/galaxy/server/config/dependency_resolvers_conf.xml"
+      admin_users: "admin@gmiot.com"
   container_resolvers_conf.xml: |
     <containers_resolvers>
       <explicit />
       <mulled />
       <build_mulled />
     </containers_resolvers>
+  dependency_resolvers_conf.xml: |
+    <dependency_resolvers>
+      <tool_shed_packages />
+      <galaxy_packages />
+      <galaxy_packages versionless="true" />
+    </dependency_resolvers>
   workflow_schedulers_conf.xml: |
     <?xml version="1.0"?>
     <workflow_schedulers default="core">
